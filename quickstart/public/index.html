@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
   </head>
   <body>
+    
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
       <a class="navbar-brand" href="#">
         <img src="https://www.twilio.com/docs/static/img/wordmark.06c5f14fff7c.svg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -29,10 +30,166 @@
         <div id="participants" class="col-xs-12 col-sm-3 col-md-2" style="text-align: center"></div>
         <div id="active-participant" class="col-xs-12 col-sm-9 col-md-10" style="text-align: center">
           <div class="participant main">
-            <video autoplay playsinline muted></video>
+            <div id="audioinputwaveform"></div>
+            <video autoplay playsinline muted id="videoinputpreview"></video>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-block">
+              <h4 class="card-title">Select Media Devices</h4>
+              <form>
+                <div class="form-group">
+                  <label class="form-text text-muted">Audio Input</label>
+                  <div class="input-group">
+                    <select id="audioinput" name="audioinput"></select>
+                    <span class="input-group-btn">
+                      <button id="audioinputapply" class="btn btn-primary btn-sm">Apply</button>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-text text-muted">Video Input</label>
+                  <div class="input-group">
+                    <select id="videoinput" name="videoinput"></select>
+                    <span class="input-group-btn">
+                      <button id="videoinputapply" class="btn btn-primary btn-sm">Apply</button>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-text text-muted">Audio Output</label>
+                  <div class="input-group">
+                    <select id="audiooutput" name="audiooutput"></select>
+                    <span class="input-group-btn">
+                      <button id="audiooutputapply" class="btn btn-primary btn-sm">Apply</button>
+                    </span>
+                  </div>
+                </div>
+                <input id="connectordisconnect" type="submit" class="btn btn-primary btn-block" value="Connect">
+                <div id="joinRoom" class="card-block" style="display:none">
+                  <h4>Join room:</h4>
+                  <h6 id="roomName"></h6>
+                  <p>Please join the above Room from another device/browser using <a href="/quickstart" target="_blank">QuickStart App</a>
+                     to see media input device changes taking effect.
+                  </p>
+                </div>
+                <div id="remote-media"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-block">
+            <button id="takesnapshot" class="btn btn-primary btn-block">Take Snapshot</button>
+            <h4 class="card-title">Snapshot</h4>
+            <canvas class="snapshot-canvas hidden"></canvas>
+            <img class="snapshot-img hidden"></img>
           </div>
         </div>
       </div>
+
+
+
+      <div>
+        <div>
+          <div class="container-fluid">
+            <div class="row thin-gutters align">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-block">
+                    <h4 class="card-title">Local Screen</h4>
+                    <div id="screenshare" class="card-body">
+                      <video id="screenpreview" autoplay></video>
+                      <button id="capturescreen" class="btn btn-primary btn-block">Capture Screen</button>
+                      <button id="stopscreencapture" class="btn btn-primary btn-block">Stop Screen Capture</button>
+                    </div>
+                  </div>
+                  <div class="card-block">
+                    <h4 class="card-title">Remote Screen</h4>
+                    <div id="screenshare" class="card-body">
+                      <video id="screenpreview" class="remote-screenpreview" autoplay></video>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div>
+        <div class="container-fluid">
+          <div class="row thin-gutters align">
+            <div class="col-sm-6">
+              <div class="card">
+                <div class="card-block">
+                  <h4 class="card-title">
+                    Network Quality
+                  </h4>
+                  <button class="btn btn-primary collapsed d-md-none" type="button" data-toggle="collapse" data-target="#collapseSnippet" aria-expanded="false" aria-controls="collapseSnippet">
+                    <span class="if-collapsed">Show Code</span>
+                    <span class="if-not-collapsed">Hide Code</span>
+                  </button>
+                  <div class="collapse dont-collapse-sm d-md-block" id="collapseSnippet">
+                    <pre id="shown-snippet" class="language-javascript"></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="card">
+                <div class="card-block">
+                  <h4 class="card-title">Set Network Quality Verbosity Levels</h4>
+                  <div class="card-body">
+                    <form>
+                      <div class="form-group">
+                        <label class="form-text text-muted">LocalParticipant</label>
+                        <div class="input-group">
+                          <select id="local" name="local">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-text text-muted">RemoteParticipant(s)</label>
+                        <div class="input-group">
+                          <select id="remote" name="remote">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                          </select>
+                        </div>
+                      </div>
+                      <input id="setuproom" class="btn btn-primary btn-block" type="submit" value="Create Room">
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div id="joinroom" class="card-block" style="display:none">
+                  <h4>Join Room:</h4>
+                  <h6 id="roomname"></h6>
+                  <p>After creating the Room with the desired verbosity levels, please join the above Room using the
+                    <a href="/quickstart" target="_blank">QuickStart App</a> or connect the below Participants to the Room.
+                    You can also change the verbosity levels and observe the change in the verbosity of the reported
+                    Network Quality stats.
+                  </p>
+              </div>
+              <div id="usercontrols"></div>
+              <div id="remotemedia"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
       <div id="modals">
         <div class="modal fade" id="select-mic" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="select-mic-label" aria-hidden="true">
           <div class="modal-dialog" role="document">
@@ -115,8 +272,19 @@
         </div>
       </div>
     </div>
+    <div>
+      
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="index.js"></script>
+    <script src="../../examples/screenshare/public/index.js"></script>
+    <script src="../../examples/networkquality/public/index.js"></script>
+    <script src="../../examples/localvideosnapshot/public/index.js"></script>
+    <script src="../../examples/mediadevices/public/index.js"></script>
+
+    <script>
+      
+    </script>
   </body>
 </html>
